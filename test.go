@@ -5,15 +5,20 @@ import (
 
 	"github.com/galileoluna/serviceEventos/datasources"
 	"github.com/galileoluna/serviceEventos/domain/evento"
+	"github.com/galileoluna/serviceEventos/services"
 )
 
-func main() {
+func Main() {
 	datasources.Init()
-	conciertoMona := evento.NewEvento(1, "Concierto Mona Jimenez", "Unico en el estadio Kempes", "06-09-1997", "06-09-1998")
+	conciertoMona := evento.NewEvento(1, "Cold play", "Unico en el estadio la plata", "06-09-1997", "06-09-1998")
 
-	conciertoMona.Insert()
+	conciertoMonaAct := evento.NewEvento(1, "Concierto Mega Death", "Unico en el estadio Kempes", "06-09-1997", "06-09-1998")
+	//conciertoMona.Insert()
 
-	fmt.Println(conciertoMona.GetEvento(2))
-	fmt.Println(conciertoMona.GetEventos())
+	services.EventoService.InsertEvento(conciertoMona)
+	services.EventoService.UpdateEvento(conciertoMonaAct, 1)
+
+	fmt.Println(services.EventoService.GetEvento(3))
+	fmt.Println(services.EventoService.GetEventos())
 
 }

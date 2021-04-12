@@ -8,7 +8,7 @@ import (
 
 const (
 	queryInsertEvento  = "INSERT INTO eventos(Nombre,Descripcion,HoraDeInicio,HoraDeFinalizacion) VALUES($1,$2,$3,$4)"
-	queryUpdateEvento  = "UPDATE eventos SET Nombre=$1, Descripcion=$2, HoraDeInicio=$3,HoraDeFinalizacion=$4 "
+	queryUpdateEvento  = "UPDATE eventos SET Nombre=$2, Descripcion=$3, HoraDeInicio=$4,HoraDeFinalizacion=$5 where ID_Evento=$1"
 	queryDeleteEvento  = "DELETE FROM eventos WHERE ID_Evento=$1; "
 	queryGetEventoByID = "SELECT * FROM eventos where ID_Evento=$1;"
 	queryGetEventos    = "SELECT * FROM eventos;"
@@ -23,12 +23,19 @@ func (nuevoEvento *Evento) Insert() error {
 }
 
 func (eventoActualizado *Evento) Update(id_evento int64) error {
+	stmt, err := datasources.Db.Prepare(queryUpdateEvento)
+	if err != nil {
 
-	_, err := datasources.Db.Exec(queryUpdateEvento, id_evento, eventoActualizado.Nombre, eventoActualizado.Descripcion, eventoActualizado.HoraDeInicio, eventoActualizado.HoraDeFinalizacion)
+		return err
+	}
+	defer stmt.Close()
+
+	_, err = stmt.Exec(id_evento, eventoActualizado.Nombre, eventoActualizado.Descripcion, eventoActualizado.HoraDeInicio, eventoActualizado.HoraDeFinalizacion)
 	if err != nil {
 		return err
 	}
 	return nil
+
 }
 
 func (eventoBorrado *Evento) Delete(id_evento int64) error {
